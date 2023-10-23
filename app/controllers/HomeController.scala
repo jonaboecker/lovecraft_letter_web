@@ -24,13 +24,17 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index())
+    Ok(views.html.index("Hello World!"))
   }
   def health() = Action {
     Ok("ok")
   }
   def board() = Action {
-    Ok(gameController.handle)
+    //Content html = views.html.Application.index.render(customer, orders);
+    //views.html.index.scala.render(gameController.handle);
+    val board = gameController.handle
+    Ok(board)
+    //Ok(views.html.index(board))
   }
   def runLL() = Action {
     gameController.runLL
