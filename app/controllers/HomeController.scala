@@ -8,6 +8,7 @@ import de.htwg.lovecraftletter.controller.controllerImpl._
 import de.htwg.lovecraftletter.model.GameStateImpl.GameState
 import de.htwg.lovecraftletter.controller.controllState
 import de.htwg.lovecraftletter.aview._
+import java.lang.ProcessBuilder.Redirect
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -24,7 +25,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * a path of `/`.
    */
   def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.index("Hello World!"))
+    Ok(views.html.index())
   }
   def health() = Action {
     Ok("ok")
@@ -33,12 +34,17 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     //Content html = views.html.Application.index.render(customer, orders);
     //views.html.index.scala.render(gameController.handle);
     val board = gameController.handle
-    Ok(board)
-    //Ok(views.html.index(board))
+    //Ok(board)
+    Ok(views.html.board(board))
   }
   def runLL() = Action {
     gameController.runLL
     Ok("Game started")
+  }
+  def initNewGame() = Action {
+    gameController.runLL
+    Redirect(routes.HomeController.board())
+    //board()
   }
   def getPlayerAmount(player: Int) = Action {
     gameController.playerAmount(player)
@@ -48,13 +54,26 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     gameController.playerName(name)
     Ok("Player name set to " + name)
   }
+  def setPlayerNameRed(name: String) = Action {
+    gameController.playerName(name)
+    Redirect(routes.HomeController.board())
+  }
   def playCard(card: Int) = Action {
     gameController.setVarUserInput(card)
     gameController.makeTurn
     Ok("Card " + card + " played")
   }
+  def playCardRed(card: Int) = Action {
+    gameController.setVarUserInput(card)
+    gameController.makeTurn
+    Redirect(routes.HomeController.board())
+  }
   def selectPlayer(player: Int) = Action {
     gameController.playerChoosed(player)
     Ok("Player " + player + " selected")
+  }
+  def selectPlayerRed(player: Int) = Action {
+    gameController.playerChoosed(player)
+    Redirect(routes.HomeController.board())
   }
 }
