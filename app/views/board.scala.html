@@ -1,32 +1,21 @@
-@(board: String, state: String)
+@(firstLine: String, lastLine: String, currentCard: Int, handCard: Int, ablageStapel: Int)
 
 @main("Lets Play!") {
   <h1>Du bist an der Reihe</h1>
-  <div >
-    @for(line <- board.split("\n")) {
-        <tt style="font-family: 'Lucida Console', monospace">@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
-    }
-  </div>
-  <!-- <div>
-    <h2>State:</h2>
-    @state.toString
-  </div> -->
-  @if(state == "standard") {
+  <p>
+    @firstLine
+  </p>
+  <img>
+    @currentCard
+  </img>
+  <img>
+    @handCard
+  </img>
+  <img>
+    @ablageStapel
+  </img>
+  <p>
+    @lastLine
+  </p>
     @standardInput()
-  }
-  @if(state == "selectPlayer") {
-    @selectPlayer()
-  }
-  @if(state == "getPlayerAmount") {
-    @playerAmount()
-  }
-  @if(state == "getPlayerName") {
-    @getPlayerName()
-  }
-  @if(state == "getInvestigatorGuess") {
-    @getInvestigatorGuess()
-  }
-  @if(state == "notImplementedYet") {
-    <p>Not implemented yet</p>
-  }
 }

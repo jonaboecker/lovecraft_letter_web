@@ -1,0 +1,32 @@
+@(board: String, state: String)
+
+@main("Lets Play!") {
+  <h1>Du bist an der Reihe</h1>
+  <div >
+    @for(line <- board.split("\n")) {
+        <tt style="font-family: 'Lucida Console', monospace">@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
+    }
+  </div>
+  <!-- <div>
+    <h2>State:</h2>
+    @state.toString
+  </div> -->
+  @if(state == "standard") {
+    @standardInput()
+  }
+  @if(state == "selectPlayer") {
+    @selectPlayer()
+  }
+  @if(state == "getPlayerAmount") {
+    @playerAmount()
+  }
+  @if(state == "getPlayerName") {
+    @getPlayerName()
+  }
+  @if(state == "getInvestigatorGuess") {
+    @getInvestigatorGuess()
+  }
+  @if(state == "notImplementedYet") {
+    <p>Not implemented yet</p>
+  }
+}
