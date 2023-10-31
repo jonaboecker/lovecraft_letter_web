@@ -4,7 +4,7 @@
   <h1>Du bist an der Reihe</h1>
   <div >
     @for(line <- board.split("\n")) {
-        <tt>@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
+        <tt style="font-family: 'Lucida Console', monospace">@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
     }
   </div>
   <!-- <div>
