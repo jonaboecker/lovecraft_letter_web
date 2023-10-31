@@ -1,4 +1,4 @@
-@(board: String)
+@(board: String, state: String)
 
 @main("Lets Play!") {
   <h1>Du bist an der Reihe</h1>
@@ -7,16 +7,26 @@
         <tt>@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
     }
   </div>
-  <Form name="setPlayerName" method="get" action="init/red/playerName/">
-    <input type="text" name="name">
-    <input type="submit" value="Submit Player Name">
-  </Form>
-  <Form name="playCard" method="get" action="turn/red/playCard/">
-    <input type="text" name="card">
-    <input type="submit" value="Play Card">
-  </Form>
-  <Form name="selectPlayer" method="get" action="turn/red/selectPlayer/">
-    <input type="text" name="player">
-    <input type="submit" value="Select Player">
-  </Form>
+  <!-- <div>
+    <h2>State:</h2>
+    @state.toString
+  </div> -->
+  @if(state == "standard") {
+    @standardInput()
+  }
+  @if(state == "selectPlayer") {
+    @selectPlayer()
+  }
+  @if(state == "getPlayerAmount") {
+    @playerAmount()
+  }
+  @if(state == "getPlayerName") {
+    @getPlayerName()
+  }
+  @if(state == "getInvestigatorGuess") {
+    @getInvestigatorGuess()
+  }
+  @if(state == "notImplementedYet") {
+    <p>Not implemented yet</p>
+  }
 }

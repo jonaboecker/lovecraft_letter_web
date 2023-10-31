@@ -17,7 +17,12 @@ GET     /init/playerAmount/:player  controllers.HomeController.getPlayerAmount(p
 GET     /init/playerName/:name      controllers.HomeController.setPlayerName(name: String)
 GET     /turn/playCard/:card        controllers.HomeController.playCard(card: Int)
 GET     /turn/selectPlayer/:player  controllers.HomeController.selectPlayer(player: Int)
+GET     /save                       controllers.HomeController.save()
+GET     /undoStep                   controllers.HomeController.undoStep()
+GET     /redoStep                   controllers.HomeController.redoStep()
 
+GET     /init/red/playerAmount/:player  controllers.HomeController.setPlayerAmountRed(player: String)
 GET     /init/red/playerName/       controllers.HomeController.setPlayerNameRed(name: String)
-GET     /turn/red/playCard/         controllers.HomeController.playCardRed(card: Int)
+GET     /turn/red/playCard/:card    controllers.HomeController.playCardRed(card: Int)
 GET     /turn/red/selectPlayer/     controllers.HomeController.selectPlayerRed(player: Int)
+GET     /turn/red/getInvestigatorGuess/:guess   controllers.HomeController.getInvestigatorGuess(guess: String)

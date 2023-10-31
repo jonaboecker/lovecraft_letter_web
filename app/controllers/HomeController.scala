@@ -16,7 +16,7 @@ import java.lang.ProcessBuilder.Redirect
  */
 @Singleton
 class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
-    val gameController = new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
+    var gameController = new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
   /**
    * Create an Action to render an HTML page.
    *
@@ -30,21 +30,41 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def health() = Action {
     Ok("ok")
   }
+  
   def board() = Action {
     //Content html = views.html.Application.index.render(customer, orders);
     //views.html.index.scala.render(gameController.handle);
     val board = gameController.handle
-    //Ok(board)
-    Ok(views.html.board(board))
+    var temp = ""
+
+    val state = gameController.getVarControllerState
+    if(state == (controllState.standard, ""))
+      temp = "standard"
+    if(state == (controllState.getEffectedPlayer, ""))
+      temp = "selectPlayer"
+    if(state == (controllState.getInvestigatorGuess, ""))
+      temp = "getInvestigatorGuess"
+    if(state == (controllState.getInputToPlayAnotherCard, ""))
+      temp = "notImplementedYet"
+    if(state == (controllState.initGetPlayerAmount, ""))
+      temp = "getPlayerAmount"
+    if(state == (controllState.initGetPlayerName, ""))
+      temp = "getPlayerName"
+
+    Ok(views.html.board(board, temp))
   }
   def runLL() = Action {
     gameController.runLL
     Ok("Game started")
   }
   def initNewGame() = Action {
+    gameController = new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
     gameController.runLL
     Redirect(routes.HomeController.board())
-    //board()
+  }
+  def setPlayerAmountRed(player: String) = Action {
+    gameController.playerAmount(player.toInt)
+    Redirect(routes.HomeController.board())
   }
   def getPlayerAmount(player: Int) = Action {
     gameController.playerAmount(player)
@@ -74,6 +94,22 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   }
   def selectPlayerRed(player: Int) = Action {
     gameController.playerChoosed(player)
+    Redirect(routes.HomeController.board())
+  }
+  def getInvestigatorGuess(guess: String) = Action {
+    gameController.investgatorGuessed(guess.toInt)
+    Redirect(routes.HomeController.board())
+  }
+  def save() = Action {
+    //gameController.save
+    Ok("Game saved")
+  }
+  def undoStep() = Action {
+    gameController.undoStep
+    Redirect(routes.HomeController.board())
+  }
+  def redoStep() = Action {
+    gameController.redoStep
     Redirect(routes.HomeController.board())
   }
 }
