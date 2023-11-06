@@ -1,19 +1,23 @@
 @(firstLine: String, lastLine: String, currentCard: Int, handCard: Int, ablageStapel: Int)
 
 @main("Lets Play!") {
-  <h1>Du bist an der Reihe</h1>
-  <p>
-    @firstLine
-  </p>
-  <img>
-    @currentCard
-  </img>
-  <img>
-    @handCard
-  </img>
-  <img>
-    @ablageStapel
-  </img>
+  <h1>@firstLine</h1>
+  <a href="/turn/red/playCard/1">
+    <figure style="display:inline-block;" >
+      <img src="assets/images/cards/Card-@currentCard.toString).jpg" width="100%" alt="Karte 1 (@currentCard)" />
+      <figcaption>Karte 1</figcaption>
+    </figure>
+  </a>
+  <a href="/turn/red/playCard/2">
+    <figure style="display:inline-block;" >
+      <img src="assets/images/cards/Card-@handCard.toString).jpg" width="100%" alt="Karte 2 (@currentCard)" />
+      <figcaption>Karte 2</figcaption>
+    </figure>
+  </a>
+  <figure style="display:inline-block;" >
+    <img src="assets/images/cards/Card-@ablageStapel.toString).jpg" width="100%" alt="Ablagestapel (@currentCard)"  />
+    <figcaption>Ablagestapel</figcaption>
+  </figure>
   <p>
     @lastLine
   </p>

@@ -23,6 +23,18 @@
     margin-right: 10px;
 }
 
+figure {
+  display: inline-block;
+  width: 28%;
+  margin-right: 10px; /* Optional: Fügt einen rechten Abstand zwischen den Figures hinzu */
+}
+
+/* Optional: Um den rechten Rand des letzten Elements in der Reihe zu entfernen */
+figure:last-child {
+  margin-right: 0;
+}
+
+
 body {
   background-color: #c2fbd7;
   color: #292b2a;

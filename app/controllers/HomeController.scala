@@ -42,12 +42,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
 
     if(state == (controllState.standard, "")) {
       val lines = board.split("\n")
-      val firstLine = lines(0)
+      val firstLine = lines(1)
       val lastLine = lines(lines.length - 1)
       var ablageStapel = -1
       if(gameController.state.player(gameController.state.currentPlayer).discardPile.length != 0)
       {
-        println(gameController.state)
         ablageStapel = gameController.state.player(gameController.state.currentPlayer).discardPile(gameController.state.player(gameController.state.currentPlayer).discardPile.length - 1)
       }
       Ok(views.html.board(firstLine, lastLine, gameController.state.currentCard, gameController.state.player(gameController.state.currentPlayer).hand, ablageStapel))
