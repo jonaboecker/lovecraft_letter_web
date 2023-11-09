@@ -1,32 +1,37 @@
-@(board: String, state: String)
+@(firstLine: String, lastLine: String, currentCard: Int, handCard: Int, ablageStapel: Int)
 
 @main("Lets Play!") {
-  <h1>Du bist an der Reihe</h1>
-  <div >
-    @for(line <- board.split("\n")) {
-        <tt>@Html(line.replaceAll(" ", "&nbsp;"))</tt><br>
-    }
+  <h1>@firstLine</h1>
+  <div class="container text-center">
+    <div class="row gx-5">
+      <div class="col col-sm-4 pb-3 md-pb-0">
+        <div class="card bg-primary rounded-1" style="width: 100%;">
+          <img src="assets/images/cards/Card-@currentCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@currentCard)">
+          <div class="card-body">
+            <h5 class="card-title text-truncate">Karte 1</h5>
+            <a href="/turn/red/playCard/1" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 1</a>
+          </div>
+        </div>
+      </div>
+      <div class="col col-sm-4 pb-3 md-pb-0">
+        <div class="card bg-primary rounded-1" style="width: 100%;">
+          <img src="assets/images/cards/Card-@handCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@handCard)">
+          <div class="card-body ">
+            <h5 class="card-title text-truncate">Karte 2</h5>
+            <a href="/turn/red/playCard/2" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 2</a>
+          </div>
+        </div>
+      </div>
+      <div class="col col-sm-4 pb-3 md-pb-0 ">
+        <div class="card bg-primary rounded-1" style="width: 100%;">
+          <img src="assets/images/cards/Card-@ablageStapel.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@ablageStapel)">
+          <div class="card-body">
+            <h5 class="card-title text-truncate">Ablagestapel</h5>
+            <button type="button" disabled class="btn btn-outline-primary border-primary text-primary" style="width: 100%;">x</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <!-- <div>
-    <h2>State:</h2>
-    @state.toString
-  </div> -->
-  @if(state == "standard") {
     @standardInput()
-  }
-  @if(state == "selectPlayer") {
-    @selectPlayer()
-  }
-  @if(state == "getPlayerAmount") {
-    @playerAmount()
-  }
-  @if(state == "getPlayerName") {
-    @getPlayerName()
-  }
-  @if(state == "getInvestigatorGuess") {
-    @getInvestigatorGuess()
-  }
-  @if(state == "notImplementedYet") {
-    <p>Not implemented yet</p>
-  }
 }

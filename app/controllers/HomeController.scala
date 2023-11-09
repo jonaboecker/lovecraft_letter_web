@@ -34,24 +34,45 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def board() = Action {
     //Content html = views.html.Application.index.render(customer, orders);
     //views.html.index.scala.render(gameController.handle);
+    val state = gameController.getVarControllerState
     val board = gameController.handle
     var temp = ""
+    var numbers: Option[Vector[Int]]= None
+    //val regex = """Vector\((\d+(?:, \d+)*)\)""".r
 
-    val state = gameController.getVarControllerState
-    if(state == (controllState.standard, ""))
-      temp = "standard"
-    if(state == (controllState.getEffectedPlayer, ""))
-      temp = "selectPlayer"
-    if(state == (controllState.getInvestigatorGuess, ""))
-      temp = "getInvestigatorGuess"
-    if(state == (controllState.getInputToPlayAnotherCard, ""))
-      temp = "notImplementedYet"
-    if(state == (controllState.initGetPlayerAmount, ""))
-      temp = "getPlayerAmount"
-    if(state == (controllState.initGetPlayerName, ""))
-      temp = "getPlayerName"
+    
 
-    Ok(views.html.board(board, temp))
+    if(state == (controllState.standard, "")) {
+      val lines = board.split("\n")
+      val firstLine = lines(1)
+      val lastLine = lines(lines.length - 1)
+      var ablageStapel = -1
+      if(gameController.state.player(gameController.state.currentPlayer).discardPile.length != 0)
+      {
+        ablageStapel = gameController.state.player(gameController.state.currentPlayer).discardPile(gameController.state.player(gameController.state.currentPlayer).discardPile.length - 1)
+      }
+      Ok(views.html.board(firstLine, lastLine, gameController.state.currentCard, gameController.state.player(gameController.state.currentPlayer).hand, ablageStapel))
+    } else {    
+      if(state == (controllState.getEffectedPlayer, "")) {
+        // boardtext = "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1, 3)"
+        //val numbers: Option[Vector[Int]] = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
+        //println(numbers)
+        numbers = Some(Vector(2, 3))
+        temp = "selectPlayer"
+        //Ok(views.html.boardNoCards(board, temp, numbers))
+      }
+      if(state == (controllState.getInvestigatorGuess, ""))
+        temp = "getInvestigatorGuess"
+      if(state == (controllState.getInputToPlayAnotherCard, ""))
+        temp = "notImplementedYet"
+      if(state == (controllState.initGetPlayerAmount, ""))
+        temp = "getPlayerAmount"
+      if(state == (controllState.initGetPlayerName, ""))
+        temp = "getPlayerName"
+
+      Ok(views.html.boardNoCards(board, temp, numbers))
+    }
+
   }
   def runLL() = Action {
     gameController.runLL
