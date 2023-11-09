@@ -1,4 +1,11 @@
-<Form name="selectPlayer" method="get" action="turn/red/selectPlayer/">
-    <input type="text" name="player">
-    <input type="submit" value="Select Player">
-</Form>
+@(numbers: Option[Vector[Int]] = None)
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Wähle einen Spieler auf den du deine Aktion anwenden möchtest
+    </button>
+    <ul class="dropdown-menu bg-primary">
+        @for(number <- numbers.getOrElse(Vector(1,2,3,4,5,6))) {
+        <li><a class="dropdown-item" href="turn/red/selectPlayer/@number">Spieler @number</a></li>
+        }
+    </ul>
+</div>

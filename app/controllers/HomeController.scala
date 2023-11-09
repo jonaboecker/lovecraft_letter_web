@@ -37,6 +37,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     val state = gameController.getVarControllerState
     val board = gameController.handle
     var temp = ""
+    var numbers: Option[Vector[Int]]= None
+    //val regex = """Vector\((\d+(?:, \d+)*)\)""".r
 
     
 
@@ -51,8 +53,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
       Ok(views.html.board(firstLine, lastLine, gameController.state.currentCard, gameController.state.player(gameController.state.currentPlayer).hand, ablageStapel))
     } else {    
-      if(state == (controllState.getEffectedPlayer, ""))
+      if(state == (controllState.getEffectedPlayer, "")) {
+        // boardtext = "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1, 3)"
+        //val numbers: Option[Vector[Int]] = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
+        //println(numbers)
+        numbers = Some(Vector(2, 3))
         temp = "selectPlayer"
+        //Ok(views.html.boardNoCards(board, temp, numbers))
+      }
       if(state == (controllState.getInvestigatorGuess, ""))
         temp = "getInvestigatorGuess"
       if(state == (controllState.getInputToPlayAnotherCard, ""))
@@ -62,7 +70,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       if(state == (controllState.initGetPlayerName, ""))
         temp = "getPlayerName"
 
-      Ok(views.html.boardNoCards(board, temp))
+      Ok(views.html.boardNoCards(board, temp, numbers))
     }
 
   }

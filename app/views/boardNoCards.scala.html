@@ -1,4 +1,4 @@
-@(board: String, state: String)
+@(board: String, state: String, numbers: Option[Vector[Int]] = None)
 
 @main("Lets Play!") {
   <h1>Du bist an der Reihe</h1>
@@ -15,7 +15,7 @@
     @standardInput()
   }
   @if(state == "selectPlayer") {
-    @selectPlayer()
+    @selectPlayer(numbers)
   }
   @if(state == "getPlayerAmount") {
     @playerAmount()
