@@ -57,7 +57,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         // boardtext = "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1, 3)"
         //val numbers: Option[Vector[Int]] = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
         //println(numbers)
-        numbers = Some(Vector(2, 3))
+        numbers = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
         temp = "selectPlayer"
         //Ok(views.html.boardNoCards(board, temp, numbers))
       }
