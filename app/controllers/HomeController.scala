@@ -38,9 +38,6 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     val board = gameController.handle
     var temp = ""
     var numbers: Option[Vector[Int]]= None
-    //val regex = """Vector\((\d+(?:, \d+)*)\)""".r
-
-    
 
     if(state == (controllState.standard, "")) {
       val lines = board.split("\n")
@@ -49,14 +46,13 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       var ablageStapel = -1
       if(gameController.state.player(gameController.state.currentPlayer).discardPile.length != 0)
       {
-        ablageStapel = gameController.state.player(gameController.state.currentPlayer).discardPile(gameController.state.player(gameController.state.currentPlayer).discardPile.length - 1)
+        ablageStapel = gameController.state.player(gameController.state.currentPlayer).discardPile(0)
+        //println("Ablagestapel= " + ablageStapel)
       }
       Ok(views.html.board(firstLine, lastLine, gameController.state.currentCard, gameController.state.player(gameController.state.currentPlayer).hand, ablageStapel))
     } else {    
       if(state == (controllState.getEffectedPlayer, "")) {
         // boardtext = "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1, 3)"
-        //val numbers: Option[Vector[Int]] = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
-        //println(numbers)
         numbers = Some(board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector)
         temp = "selectPlayer"
         //Ok(views.html.boardNoCards(board, temp, numbers))
