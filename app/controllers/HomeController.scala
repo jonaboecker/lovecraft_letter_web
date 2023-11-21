@@ -9,6 +9,7 @@ import de.htwg.lovecraftletter.model.GameStateImpl.GameState
 import de.htwg.lovecraftletter.controller.controllState
 import de.htwg.lovecraftletter.aview._
 import java.lang.ProcessBuilder.Redirect
+import play.api.libs.json._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -66,7 +67,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       if(state == (controllState.initGetPlayerName, ""))
         temp = "getPlayerName"
 
-      Ok(views.html.boardNoCards(board, temp, numbers))
+      Ok(views.html.boardNoCards(board, temp))
     }
 
   }
@@ -86,10 +87,6 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def getPlayerAmount(player: Int) = Action {
     gameController.playerAmount(player)
     Ok("Game started with " + player + " players")
-  }
-  def setPlayerName(name: String) = Action {
-    gameController.playerName(name)
-    Ok("Player name set to " + name)
   }
   def setPlayerNameRed(name: String) = Action {
     gameController.playerName(name)
@@ -128,5 +125,39 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def redoStep() = Action {
     gameController.redoStep
     Redirect(routes.HomeController.board())
+  }
+  def getSelectablePlayers() = Action {
+    val board = gameController.handle
+    if (gameController.getVarControllerState != (controllState.getEffectedPlayer, "")) {
+    val json2: JsValue = JsObject(Seq(
+      "player" -> JsObject(Seq(
+        "numbers" -> JsArray()
+      ))
+    ))
+    Ok(json2)
+    } else {
+
+      // boardtext = "Waehle einen Spieler auf den du deine Aktion anwenden willst Vector(1, 3)"
+      val numbers = board.split(", ").map(_.replaceAll("[^\\d.]", "").toInt).toVector
+
+      val json: JsValue = JsObject(Seq(
+        "player" -> JsObject(Seq(
+          "numbers" -> JsArray(numbers.map(JsNumber(_))),
+        ))
+      ))
+      Ok(json)
+    }
+  }
+  def setPlayerName() = Action(parse.json) { request =>
+    val playerName = (request.body \ "playerName").asOpt[String]
+    playerName match {
+      case Some(name) =>
+        // Hier kannst du die playerName-Funktion aufrufen oder verwenden, wie du es brauchst
+        // Zum Beispiel:
+        gameController.playerName(name)
+        Ok(s"Player name set to $name")
+      case None =>
+        BadRequest("Player name not found in the request")
+    }
   }
 }
