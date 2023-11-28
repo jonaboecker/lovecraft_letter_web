@@ -31,6 +31,42 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def health() = Action {
     Ok("ok")
   }
+
+  //Websocket
+  def socket = WebSocket.accept[String, String] { request =>
+    ActorFlow.actorRef { out =>
+      println("Connect received")
+      LovecraftLetterActorFactory.create(out)
+    }
+  }
+
+  object LovecraftLetterActorFactory {
+    def create(out: ActorRef) = {
+      Props(new LovecraftLetterWebSocketActor(out))
+    }
+  }
+
+  class LovecraftLetterWebSocketActor(out: ActorRef) extends Actor with Reactor{
+    listenTo(gameController)
+
+    def receive = {
+      case msg: String =>
+        out ! (gameController.toJson.toString)
+        println("Sent Json to Client"+ msg)
+    }
+
+    reactions += {
+      case event: GridSizeChanged => sendJsonToClient
+      case event: CellChanged     => sendJsonToClient
+      case event: CandidatesChanged => sendJsonToClient
+    }
+
+    def sendJsonToClient = {
+      println("Received event from Controller")
+      out ! (gameController.toJson.toString)
+    }
+  }
+
   
   def board() = Action {
     //Content html = views.html.Application.index.render(customer, orders);
