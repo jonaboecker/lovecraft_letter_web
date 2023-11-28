@@ -4,20 +4,44 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 
+import play.api.libs.streams.ActorFlow
+import akka.actor.ActorSystem
+import akka.stream.Materializer
+import akka.actor._
+
+import scala.swing.Reactor
+
+import akka.actor.ActorSystem
+import play.api.mvc._
+import akka.actor.ActorRef
+import akka.actor.Props
+import akka.stream.Materializer
+import akka.actor.Actor
+import akka.stream.Materializer
+import akka.stream.OverflowStrategy
+import akka.stream.scaladsl._
+
 import de.htwg.lovecraftletter.controller.controllerImpl._
 import de.htwg.lovecraftletter.model.GameStateImpl.GameState
 import de.htwg.lovecraftletter.controller.controllState
 import de.htwg.lovecraftletter.aview._
+import de.htwg.lovecraftletter.util.Observer
+import de.htwg.lovecraftletter.aview.TUI
 import java.lang.ProcessBuilder.Redirect
 import play.api.libs.json._
+
+//val tui = new de.htwg.lovecraftletter.aview.TUI()
+
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
+class HomeController @Inject()(val controllerComponents: ControllerComponents)(implicit system: ActorSystem, materializer: Materializer) extends BaseController with de.htwg.lovecraftletter.util.Observer {
     var gameController = new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
+    //val tui = new de.htwg.lovecraftletter.aview.TUI(gameController)
+    gameController.add(this)
   /**
    * Create an Action to render an HTML page.
    *
@@ -30,6 +54,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   }
   def health() = Action {
     Ok("ok")
+  }
+  override def update = {
+    //show(controller.handle)
+    println("Update received")
+  }
+  def tui() = Action {
+    val tui = new de.htwg.lovecraftletter.aview.TUI(gameController)
+    Ok("TUI started")
   }
 
   //Websocket
@@ -47,23 +79,23 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   }
 
   class LovecraftLetterWebSocketActor(out: ActorRef) extends Actor with Reactor{
-    listenTo(gameController)
+    //listenTo(gameController)
 
     def receive = {
       case msg: String =>
-        out ! (gameController.toJson.toString)
+        //out ! (gameController.toJson.toString)
         println("Sent Json to Client"+ msg)
     }
 
-    reactions += {
+    /* reactions += {
       case event: GridSizeChanged => sendJsonToClient
       case event: CellChanged     => sendJsonToClient
       case event: CandidatesChanged => sendJsonToClient
-    }
+    } */
 
-    def sendJsonToClient = {
+    def sendJsonToClient(msg: String) = {
       println("Received event from Controller")
-      out ! (gameController.toJson.toString)
+      out ! (msg)
     }
   }
 
