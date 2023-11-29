@@ -3,13 +3,15 @@
         Welche Karte rätst du?
     </button>
     <ul class="dropdown-menu bg-primary">
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/0">Rate 0</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/2">Rate 2</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/3">Rate 3</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/4">Rate 4</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/5">Rate 5</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/6">Rate 6</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/7">Rate 7</a></li>
-        <li><a class="dropdown-item" href="/turn/red/getInvestigatorGuess/8">Rate 8</a></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(0)">Rate 0</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(2)">Rate 2</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(3)">Rate 3</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(4)">Rate 4</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(5)">Rate 5</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(6)">Rate 6</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(7)">Rate 7</div></li>
+        <li><div class="dropdown-item" onclick="submitInvestigatorGuess(8)">Rate 8</div></li>
     </ul>
+    <script src="../assets/javascripts/csrfToken.js" type="text/javascript"></script>
+    <script src="../assets/javascripts/submitInvestigatorGuess.js" type="text/javascript"></script>
 </div>

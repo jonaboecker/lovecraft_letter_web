@@ -4,8 +4,10 @@
     </button>
     <ul class="dropdown-menu bg-primary">
         @for(number <- Vector(1,2,3,4,5,6)) {
-        <li><a id="item@number" class="dropdown-item" href="turn/red/selectPlayer/@number">Spieler @number</a></li>
+        <li><div id="item@number" class="dropdown-item" onclick="submitSelectedPlayer(@number)">Spieler @number</div></li>
         }
     </ul>
-    <script src="assets/javascripts/getSelectablePlayers.js" type="text/javascript"></script>
+    <script src="../assets/javascripts/getSelectablePlayers.js" type="text/javascript"></script>
+    <script src="../assets/javascripts/csrfToken.js" type="text/javascript"></script>
+    <script src="../assets/javascripts/selectPlayer.js" type="text/javascript"></script>
 </div>

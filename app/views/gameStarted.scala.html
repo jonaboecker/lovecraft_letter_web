@@ -1,0 +1,14 @@
+@(player: Int)
+@main("Spieler Einladen") {
+  
+    <h1>Lade deine Mitspieler ein</h1>
+    <div class="container text-center">
+        @for(i <- 2 to player) {
+            <div>
+                <a href="/gameBoard/@i" target="_blank">Spieler @i</a>
+            </div>
+        }
+    </div>
+    <a class="button" href="/gameBoard/1">Zum Spiel</a>
+}
+  

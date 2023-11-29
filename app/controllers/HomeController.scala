@@ -10,6 +10,9 @@ import akka.stream.Materializer
 import akka.actor._
 
 import scala.swing.Reactor
+import scala.collection.mutable.Map
+
+import java.util.UUID
 
 import akka.actor.ActorSystem
 import play.api.mvc._
@@ -65,10 +68,16 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
   }
 
   //Websocket
+  // Map to store ActorRef objects
+  val actorMap: Map[String, ActorRef] = Map()
+
   def socket = WebSocket.accept[String, String] { request =>
     ActorFlow.actorRef { out =>
       println("Connect received")
-      LovecraftLetterActorFactory.create(out)
+      val actor = LovecraftLetterActorFactory.create(out)
+      val sessionId = UUID.randomUUID().toString // Generate a unique ID
+      actorMap.put(sessionId, out) // Store the ActorRef
+      actor
     }
   }
 
@@ -79,12 +88,17 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
   }
 
   class LovecraftLetterWebSocketActor(out: ActorRef) extends Actor with Reactor{
+    override def postStop(): Unit = {
+      // Hier wird ausgeführt, wenn die Verbindung geschlossen wird
+      println("WebSocket connection closed")
+      actorMap.retain((_, v) => v != this)
+    }
     //listenTo(gameController)
 
     def receive = {
       case msg: String =>
         //out ! (gameController.toJson.toString)
-        println("Sent Json to Client"+ msg)
+        println("Received Message from Client: "+ msg)
     }
 
     /* reactions += {
@@ -99,8 +113,15 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
     }
   }
 
+  // Method to send a message to a specific session
+  def sendMessageToWebsockets(message: JsValue): Unit = {
+    actorMap.foreach { case (sessionId, actor) =>
+      actor ! message.toString
+    }
+  }
+
   
-  def board() = Action {
+  def board(player: Int) = Action {
     //Content html = views.html.Application.index.render(customer, orders);
     //views.html.index.scala.render(gameController.handle);
     val state = gameController.getVarControllerState
@@ -130,57 +151,36 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
         temp = "getInvestigatorGuess"
       if(state == (controllState.getInputToPlayAnotherCard, ""))
         temp = "notImplementedYet"
-      if(state == (controllState.initGetPlayerAmount, ""))
-        temp = "getPlayerAmount"
-      if(state == (controllState.initGetPlayerName, ""))
-        temp = "getPlayerName"
 
       Ok(views.html.boardNoCards(board, temp))
     }
-
   }
-  def runLL() = Action {
-    gameController.runLL
-    Ok("Game started")
+  def getGameStartedPage(player: Int) = Action {
+    Ok(views.html.gameStarted(player))
   }
   def initNewGame() = Action {
     gameController = new Controller(GameState(0, Nil, Nil, 0), (controllState.standard, ""), -999)
     gameController.runLL
-    Redirect(routes.HomeController.board())
-  }
-  def setPlayerAmountRed(player: String) = Action {
-    gameController.playerAmount(player.toInt)
-    Redirect(routes.HomeController.board())
-  }
-  def getPlayerAmount(player: Int) = Action {
-    gameController.playerAmount(player)
-    Ok("Game started with " + player + " players")
-  }
-  def setPlayerNameRed(name: String) = Action {
-    gameController.playerName(name)
-    Redirect(routes.HomeController.board())
+    Ok("Game initialized")
   }
   def playCard(card: Int) = Action {
     gameController.setVarUserInput(card)
     gameController.makeTurn
+    val json: JsValue = JsObject(Seq(
+      "player" -> JsNumber(gameController.state.currentPlayer),
+    ))
+    sendMessageToWebsockets(json)
+    //LovecraftLetterWebSocketActor.sendJsonToClient(gameController.gameState.currentPlayer.toString)
     Ok("Card " + card + " played")
   }
-  def playCardRed(card: Int) = Action {
+  def playCardRed(card: Int, player: Int) = Action {
     gameController.setVarUserInput(card)
     gameController.makeTurn
-    Redirect(routes.HomeController.board())
-  }
-  def selectPlayer(player: Int) = Action {
-    gameController.playerChoosed(player)
-    Ok("Player " + player + " selected")
-  }
-  def selectPlayerRed(player: Int) = Action {
-    gameController.playerChoosed(player)
-    Redirect(routes.HomeController.board())
-  }
-  def getInvestigatorGuess(guess: String) = Action {
-    gameController.investgatorGuessed(guess.toInt)
-    Redirect(routes.HomeController.board())
+    val json: JsValue = JsObject(Seq(
+      "player" -> JsNumber(gameController.state.currentPlayer),
+    ))
+    sendMessageToWebsockets(json)
+    Redirect(routes.HomeController.board(player))
   }
   def save() = Action {
     //gameController.save
@@ -188,11 +188,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
   }
   def undoStep() = Action {
     gameController.undoStep
-    Redirect(routes.HomeController.board())
+    Redirect(routes.HomeController.board(gameController.state.currentPlayer + 1))
   }
   def redoStep() = Action {
     gameController.redoStep
-    Redirect(routes.HomeController.board())
+    Redirect(routes.HomeController.board(gameController.state.currentPlayer + 1))
   }
   def getSelectablePlayers() = Action {
     val board = gameController.handle
@@ -218,6 +218,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
   }
   def setPlayerName() = Action(parse.json) { request =>
     val playerName = (request.body \ "playerName").asOpt[String]
+    println("PlayerName: " + playerName)
     playerName match {
       case Some(name) =>
         // Hier kannst du die playerName-Funktion aufrufen oder verwenden, wie du es brauchst
@@ -226,6 +227,57 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
         Ok(s"Player name set to $name")
       case None =>
         BadRequest("Player name not found in the request")
+    }
+  }
+  def setPlayerAmount() = Action(parse.json) { request =>
+    val playerAmount = (request.body \ "playerAmount").asOpt[String]
+    //println("PlayerAmount: " + playerAmount)
+    playerAmount match {
+      case Some(player) =>
+        // Hier kannst du die playerName-Funktion aufrufen oder verwenden, wie du es brauchst
+        // Zum Beispiel:
+        gameController.playerAmount(player.toInt)
+        Ok(s"Player Amount set to $player")
+      case None =>
+        BadRequest("Player Amount not found in the request")
+    }
+  }
+  def getCurrentPlayer() = Action {
+    val json: JsValue = JsObject(Seq(
+      "player" -> JsObject(Seq(
+        "currentPlayer" -> JsNumber(gameController.state.currentPlayer),
+      ))
+    ))
+    Ok(json)
+  }
+  def selectPlayer() = Action(parse.json) { request =>
+    val player = (request.body \ "player").asOpt[Int]
+    println("Player: " + player)
+    player match {
+      case Some(irgendwas) =>
+        gameController.playerChoosed(irgendwas)
+        val json: JsValue = JsObject(Seq(
+          "player" -> JsNumber(gameController.state.currentPlayer),
+        ))
+        sendMessageToWebsockets(json)
+        Ok(s"Player $irgendwas choosed")
+      case None =>
+        BadRequest("Player not found in the request")
+    }
+  }
+  def getInvestigatorGuess() = Action(parse.json) { request =>
+    val guess = (request.body \ "guess").asOpt[Int]
+    println("Guess: " + guess)
+    guess match {
+      case Some(irgendwas) =>
+        gameController.investgatorGuessed(irgendwas)
+        val json: JsValue = JsObject(Seq(
+          "player" -> JsNumber(gameController.state.currentPlayer),
+        ))
+        sendMessageToWebsockets(json)
+        Ok(s"$irgendwas guessed")
+      case None =>
+        BadRequest("Guess not found in the request")
     }
   }
 }

@@ -2,30 +2,30 @@
 
 @main("Lets Play!") {
   
-  <h1>@firstLine</h1>
+  <h1 id="firstLine">@firstLine</h1>
   <div class="container text-center">
     <div class="row gx-5">
-      <div class="col col-sm-3 pb-3 md-pb-0" onclick="playCard(1)">
+      <div id="card1" hidden class="col col-sm-3 pb-3 md-pb-0" onclick="playCard(1)">
         <div class="card bg-primary rounded-1" style="width: 100%;">
-          <img src="assets/images/cards/Card-@currentCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@currentCard)">
+          <img src="../assets/images/cards/Card-@currentCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@currentCard)">
           <div class="card-body">
             <h5 class="card-title text-truncate">Karte 1</h5>
-            <a href="/turn/red/playCard/1" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 1</a>
+            <div onclick="playCard(1)" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 1</div>
           </div>
         </div>
       </div>
-      <div class="col col-sm-3 pb-3 md-pb-0" onclick="playCard(2)">
+      <div id="card2" hidden class="col col-sm-3 pb-3 md-pb-0" onclick="playCard(2)">
         <div class="card bg-primary rounded-1" style="width: 100%;">
-          <img src="assets/images/cards/Card-@handCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@handCard)">
+          <img src="../assets/images/cards/Card-@handCard.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@handCard)">
           <div class="card-body ">
             <h5 class="card-title text-truncate">Karte 2</h5>
-            <a href="/turn/red/playCard/2" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 2</a>
+            <div onclick="playCard(2)" class="btn btn-outline-secondary text-truncate" style="width: 100%;">Spiele Karte 2</div>
           </div>
         </div>
       </div>
       <div class="col col-sm-3 pb-3 md-pb-0 ">
         <div class="card bg-primary rounded-1" style="width: 100%;">
-          <img src="assets/images/cards/Card-@ablageStapel.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@ablageStapel)">
+          <img src="../assets/images/cards/Card-@ablageStapel.toString).jpg" class="card-img-top rounded-1" alt="Karte 1 (@ablageStapel)">
           <div class="card-body">
             <h5 class="card-title text-truncate">Ablagestapel</h5>
             <button type="button" disabled class="btn btn-outline-primary border-primary text-primary" style="width: 100%;">x</a>
@@ -34,7 +34,7 @@
       </div>
       <div class="col col-sm-3 pb-3 md-pb-0 " id="overview_card"  onclick="turnOverOverwiewCard()">
         <div class="card bg-primary rounded-1" style="width: 100%;">
-          <img id="overview_img" src="assets/images/cards/Overview.jpg" class="card-img-top rounded-1" alt="Übersichtskarte">
+          <img id="overview_img" src="../assets/images/cards/Overview.jpg" class="card-img-top rounded-1" alt="Übersichtskarte">
           <div class="card-body">
             <h5 class="card-title text-truncate">Kartenübersicht</h5>
             <button type="button" disabled class="btn btn-outline-primary border-primary text-primary" style="width: 100%;">x</a>
@@ -43,6 +43,9 @@
       </div>
     </div>
   </div>
+  <div id="standardInput" hidden>
     @standardInput()
-    <script src="assets/javascripts/board.js" type="text/javascript"></script>
+  </div>
+    <script src="../assets/javascripts/websocket.js" type="text/javascript"></script>
+    <script src="../assets/javascripts/board.js" type="text/javascript"></script>
 }
