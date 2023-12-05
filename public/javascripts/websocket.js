@@ -24,7 +24,17 @@ function connectWebSocket() {
         data = json.player;
         var number = Number(document.getElementById("currentPlayer").value) + 1;
         if(number !== (data + 1)) {
-            location.reload();
+            //location.reload();
+            boardApp.toggleSeen();
+            $.ajax({
+                type: "GET",
+                url: "/getFirstLineOfBoard",
+                dataType: "json"
+            }).done(function(result){
+                    console.log(result)
+                    document.getElementById("firstLine").innerHTML = result.firstLine;
+                }
+            )
         }
         /* if (typeof e.data === "string") {
             let json = JSON.parse(e.data);

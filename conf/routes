@@ -28,3 +28,5 @@ GET     /getSelectablePlayers/      controllers.HomeController.getSelectablePlay
 POST    /init/playerName            controllers.HomeController.setPlayerName()
 POST    /init/playerAmount          controllers.HomeController.setPlayerAmount()
 GET     /getCurrentPlayer           controllers.HomeController.getCurrentPlayer()
+GET     /getCurrentCards            controllers.HomeController.getCurrentCards()
+GET     /getFirstLineOfBoard       controllers.HomeController.getFirstLineOfBoard()

@@ -280,4 +280,20 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
         BadRequest("Guess not found in the request")
     }
   }
+  def getCurrentCards() = Action {
+    val json: JsValue = JsObject(Seq(
+      "cards" -> JsObject(Seq(
+        "card1" -> JsNumber(gameController.state.player(gameController.state.currentPlayer).hand),
+        "card2" -> JsNumber(gameController.state.currentCard),
+        "card3" -> JsNumber(gameController.state.player(gameController.state.currentPlayer).discardPile(0)),
+      ))
+    ))
+    Ok(json)
+  }
+  def getFirstLineOfBoard() = Action {
+    val json: JsValue = JsObject(Seq(
+          "firstLine" -> JsString(gameController.handle.split("\n")(1)),
+        ))
+    Ok(json)
+  }
 }

@@ -14,31 +14,8 @@ $( document ).ready(function() {
         document.getElementById("menu_item_overviewCard_text").textContent = "Übersichtskarte ausblenden";
     }
 
-    // disable cards if not your turn
-    var path = window.location.pathname.split('/'); // Gibt "/gameBoard/2" zurück
-    var player = path[path.length - 1]; // Nimmt das letzte Element des Arrays
-    console.log(player); // Gibt "2" aus
-    $.ajax({
-        type: "GET",
-        url: "/getCurrentPlayer",
-        dataType: "json"
-    }).done(function(result){
-        console.log(result)
-        if(result.player.currentPlayer != player - 1) {
-            document.getElementById("card1").hidden = true;
-            document.getElementById("card2").hidden = true;
-            document.getElementById("standardInput").hidden = true;
-        } else {
-            document.getElementById("card1").hidden = false;
-            document.getElementById("card2").hidden = false;
-            document.getElementById("standardInput").hidden = false;
-        }
-        //set player
-        document.getElementById("currentPlayer").value = result.player.currentPlayer;
-       }
-    )
+    //console.log(player);
 
-    //loadJson();
     //init Websocket
     connectWebSocket()
 });
@@ -75,4 +52,5 @@ function playCard(card_id) {
     var path = window.location.pathname.split('/'); // Gibt "/gameBoard/2" zurück
     var player = path[path.length - 1]; // Nimmt das letzte Element des Arrays
     window.location.replace("/turn/red/playCard/" + card_id + "/" + player);
+    
 }
