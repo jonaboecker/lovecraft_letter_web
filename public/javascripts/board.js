@@ -33,6 +33,8 @@ $( document ).ready(function() {
             document.getElementById("card2").hidden = false;
             document.getElementById("standardInput").hidden = false;
         }
+        //set player
+        document.getElementById("currentPlayer").value = result.player.currentPlayer;
        }
     )
 

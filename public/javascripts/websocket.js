@@ -22,14 +22,9 @@ function connectWebSocket() {
         console.log('Message from Websocket: ' + e.data);
         let json = JSON.parse(e.data);
         data = json.player;
-        var string = document.getElementById("firstLine").innerText;
-        //console.log(string);
-        let number = string.match(/[1-6]/)[0];
-        //console.log(number);
-        //console.log(Number(number) !== (data + 1));
-        if(Number(number) !== (data + 1)) {
+        var number = Number(document.getElementById("currentPlayer").value) + 1;
+        if(number !== (data + 1)) {
             location.reload();
-            //console.log("reload");
         }
         /* if (typeof e.data === "string") {
             let json = JSON.parse(e.data);
