@@ -30,5 +30,3 @@ POST    /init/playerAmount          controllers.HomeController.setPlayerAmount()
 GET     /getCurrentPlayer           controllers.HomeController.getCurrentPlayer()
 GET     /getCurrentCards            controllers.HomeController.getCurrentCards()
 GET     /getFirstLineOfBoard       controllers.HomeController.getFirstLineOfBoard()
-
-GET     /test                       controllers.HomeController.test()
