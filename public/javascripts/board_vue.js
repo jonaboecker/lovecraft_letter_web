@@ -2,7 +2,7 @@ const ConditionalRendering = {
     
     data() {
       return {
-        seen: false
+        seenAllowed: true
       }
     },
     created() {
@@ -18,10 +18,12 @@ const ConditionalRendering = {
             console.log(result)
             if(result.player.currentPlayer !== player - 1) {
                 console.log("false")
-                self.seen = false;
+                self.seenAllowed = false;
+                document.getElementById('hiddenInputSeen').value = self.seenAllowed;
             } else {
                 console.log("true")
-                self.seen = true;
+                self.seenAllowed = true;
+                document.getElementById('hiddenInputSeen').value = self.seenAllowed;
             }
             //set player
             document.getElementById("currentPlayer").value = result.player.currentPlayer;
@@ -40,9 +42,13 @@ const ConditionalRendering = {
             }).done(function(result){
                 console.log(result)
                 if(result.player.currentPlayer !== player - 1) {
-                    self.seen = false;
+                    console.log("false");
+                    self.seenAllowed = false;
+                    document.getElementById('hiddenInputSeen').value = self.seenAllowed;
                 } else {
-                    self.seen = true;
+                    console.log("true");
+                    self.seenAllowed = true;
+                    document.getElementById('hiddenInputSeen').value = self.seenAllowed;
                     // change cards
                     $.ajax({
                         type: "GET",
@@ -50,9 +56,12 @@ const ConditionalRendering = {
                         dataType: "json"
                     }).done(function(result){
                         console.log(result)
-                        document.getElementById("card1img").src = '../assets/images/cards/Card-' + String(result.cards.card1) + ').jpg';
-                        document.getElementById("card2img").src = '../assets/images/cards/Card-' + String(result.cards.card2) + ').jpg';
-                        document.getElementById("card3img").src = '../assets/images/cards/Card-' + String(result.cards.card3) + ').jpg';
+                        document.getElementById('card1GetValue').value = result.cards.card1;
+                        document.getElementById('card2GetValue').value = result.cards.card2;
+                        document.getElementById('card3GetValue').value = result.cards.card3;
+                        //document.getElementById("card1img").src = '../assets/images/cards/Card-' + String(result.cards.card1) + ').jpg';
+                        //document.getElementById("card2img").src = '../assets/images/cards/Card-' + String(result.cards.card2) + ').jpg';
+                        //document.getElementById("card3img").src = '../assets/images/cards/Card-' + String(result.cards.card3) + ').jpg';
                        }
                     )
                 }

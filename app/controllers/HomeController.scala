@@ -296,4 +296,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
         ))
     Ok(json)
   }
+  def test() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.test())
+  }
 }
