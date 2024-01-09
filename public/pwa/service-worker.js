@@ -1,4 +1,3 @@
-console.log("Service Worker is running");
 /*
 Copyright 2015, 2019 Google Inc. All Rights Reserved.
  Licensed under the Apache License, Version 2.0 (the "License");
