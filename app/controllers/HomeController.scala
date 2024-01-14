@@ -32,6 +32,7 @@ import de.htwg.lovecraftletter.util.Observer
 import de.htwg.lovecraftletter.aview.TUI
 import java.lang.ProcessBuilder.Redirect
 import play.api.libs.json._
+import java.awt.Desktop.Action
 
 //val tui = new de.htwg.lovecraftletter.aview.TUI()
 
@@ -54,6 +55,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents)(i
    */
   def index() = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
+  }
+  def robots() = Action { implicit request: Request[AnyContent] =>
+    Ok("User-agent: *\nDisallow: /")
   }
   def health() = Action {
     Ok("ok")
